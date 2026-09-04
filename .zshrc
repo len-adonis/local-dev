@@ -1,3 +1,6 @@
+# Use to debug zshrc loading speed bottlenecks
+zmodload zsh/zprof
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -9,25 +12,6 @@ POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
 
 # From .shrc
 [ -f ~/.shrc ] && . ~/.shrc
-
-# Python (Only keep this pyenv block if you aren't using 'mise' for Python)
-# export PYENV_ROOT="$HOME/.pyenv"
-# if [[ -d $PYENV_ROOT/bin ]]; then
-#     export PATH="$PYENV_ROOT/bin:$PATH"
-#     zsh-defer eval "$(pyenv init - zsh)"
-# fi
-
-# Load on startup
-if [ -x "$HOME/.local/bin/mise" ]; then
-    eval "$($HOME/.local/bin/mise activate zsh)"
-else
-    eval "$(mise activate zsh)"
-fi
-
-# Rely on mise use --global node@22
-# export NVM_DIR="$HOME/.nvm"
-# zsh-defer source "$NVM_DIR/nvm.sh"
-# zsh-defer source "$NVM_DIR/bash_completion"
 
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
@@ -157,11 +141,34 @@ bindkey '^[^?' backward-kill-word
 
 # Core Shell Enhancements (Order matters: fzf-tab -> autosuggestions -> syntax)
 source ~/zsh-defer/zsh-defer.plugin.zsh
-zsh-defer source $(brew --prefix)/opt/fzf-tab/share/fzf-tab/fzf-tab.zsh
-zsh-defer source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+zsh-defer source /opt/homebrew/opt/fzf-tab/share/fzf-tab/fzf-tab.zsh
+zsh-defer source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# Python (Only keep this pyenv block if you aren't using 'mise' for Python)
+# export PYENV_ROOT="$HOME/.pyenv"
+# if [[ -d $PYENV_ROOT/bin ]]; then
+#     export PATH="$PYENV_ROOT/bin:$PATH"
+#     zsh-defer eval "$(pyenv init - zsh)"
+# fi
+
+# Load on startup
+if [ -x "$HOME/.local/bin/mise" ]; then
+    zsh-defer eval "$($HOME/.local/bin/mise activate zsh)"
+else
+    zsh-defer eval "$(mise activate zsh)"
+fi
+
+# Rely on mise use --global node@22
+# export NVM_DIR="$HOME/.nvm"
+# zsh-defer source "$NVM_DIR/nvm.sh"
+# zsh-defer source "$NVM_DIR/bash_completion"
+
+# If you come from bash you might have to change your $PATH.
+# export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+
 
 # History Substring Search & Hotkeys
-zsh-defer source $(brew --prefix)/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+zsh-defer source /opt/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
 zsh-defer bindkey '^[[A' history-substring-search-up
 zsh-defer bindkey '^[[B' history-substring-search-down
 zsh-defer bindkey '^[OA' history-substring-search-up
@@ -174,7 +181,6 @@ else
   [[ -r ~/.p10k.zsh ]] && source ~/.p10k.zsh
 fi
 
-
 # Do everything I need to do
 alias trustmebro='assume production'
 alias goodmorning='open https://mail.google.com/mail/u/0/ && open https://stage.app.adonis.io/ && open https://keepersecurity.com/vault/# && assume production'
@@ -185,4 +191,4 @@ export CLAUDE_CODE_USE_BEDROCK=1
 # Use ANTHROPIC_MODEL to change it
 
 # CRUCIAL: Syntax highlighting MUST be the absolute final deferred line
-zsh-defer source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+zsh-defer source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
