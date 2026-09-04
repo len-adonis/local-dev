@@ -92,7 +92,6 @@ plugins=(
     zsh-bat
     aws
     python
-    mise
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -158,15 +157,23 @@ fi
 [ -f ~/.shrc ] && . ~/.shrc
 
 # Python (Only keep this pyenv block if you aren't using 'mise' for Python)
-export PYENV_ROOT="$HOME/.pyenv"
-if [[ -d $PYENV_ROOT/bin ]]; then
-    export PATH="$PYENV_ROOT/bin:$PATH"
-    zsh-defer eval "$(pyenv init - zsh)"
+# export PYENV_ROOT="$HOME/.pyenv"
+# if [[ -d $PYENV_ROOT/bin ]]; then
+#     export PATH="$PYENV_ROOT/bin:$PATH"
+#     zsh-defer eval "$(pyenv init - zsh)"
+# fi
+
+# Deferred Mise Engine (Loads instantly behind the scenes)
+if [ -x "$HOME/.local/bin/mise" ]; then
+    zsh-defer eval "$($HOME/.local/bin/mise activate zsh)"
+else
+    zsh-defer eval "$(mise activate zsh)"
 fi
 
-export NVM_DIR="$HOME/.nvm"
-zsh-defer source "$NVM_DIR/nvm.sh"
-zsh-defer source "$NVM_DIR/bash_completion"
+# Rely on mise use --global node@22
+# export NVM_DIR="$HOME/.nvm"
+# zsh-defer source "$NVM_DIR/nvm.sh"
+# zsh-defer source "$NVM_DIR/bash_completion"
 
 
 # Do everything I need to do
