@@ -50,7 +50,8 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # FZF-Tab Interactive Preview Rules
 zstyle ':fzf-tab:*' fzf-flags --color=fg:4,bg+:8,hl:1,hl+:1 --height=50%
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'bat --color=always --style=numbers $realpath'
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls -la --color=always $realpath'
+zstyle ':fzf-tab:complete:*' fzf-preview '[[ -d $realpath ]] && ls -la --color=always $realpath || bat --color=always --style=numbers $realpath 2>/dev/null'
 
 # Uncomment the following line if pasting URLs and other text is messed up.
 # DISABLE_MAGIC_FUNCTIONS="true"
