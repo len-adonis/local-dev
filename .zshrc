@@ -143,10 +143,6 @@ zsh-defer bindkey '^[[B' history-substring-search-down
 zsh-defer bindkey '^[OA' history-substring-search-up
 zsh-defer bindkey '^[OB' history-substring-search-down
 
-# CRUCIAL: Syntax highlighting MUST be the absolute final deferred line
-zsh-defer source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 if [[ -n "$CURSOR_AGENT" ]]; then
   # Skip theme initialization for better compatibility
@@ -177,3 +173,6 @@ alias goodmorning='open https://mail.google.com/mail/u/0/ && open https://stage.
 export CLAUDE_CODE_USE_BEDROCK=1
 # Primary model defaults to global.anthropic.claude-sonnet-4-5-20250929-v1:0
 # Use ANTHROPIC_MODEL to change it
+
+# CRUCIAL: Syntax highlighting MUST be the absolute final deferred line
+zsh-defer source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
