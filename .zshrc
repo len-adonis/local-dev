@@ -122,9 +122,25 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+# Word Jump: Option + Left/Right Arrow
+bindkey "^[[1;5D" backward-word
+bindkey "^[[1;5C" forward-word
+bindkey "^[^[[D" backward-word
+bindkey "^[^[[C" forward-word
+
+# Quick Delete: Option + Delete
+bindkey '^[^?' backward-kill-word
+
+# Auto suggestions first, syntax highlight last
 source ~/zsh-defer/zsh-defer.plugin.zsh
-source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+zsh-defer source $(brew --prefix)/opt/fzf-tab/share/fzf-tab/fzf-tab.zsh
+zsh-defer source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+zsh-defer source $(brew --prefix)/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+zsh-defer bindkey '^[[A' history-substring-search-up
+zsh-defer bindkey '^[[B' history-substring-search-down
+zsh-defer bindkey '^[OA' history-substring-search-up
+zsh-defer bindkey '^[OB' history-substring-search-down
+zsh-defer source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 if [[ -n "$CURSOR_AGENT" ]]; then
