@@ -1,5 +1,5 @@
 # Use to debug zshrc loading speed bottlenecks
-zmodload zsh/zprof
+# zmodload zsh/zprof
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
