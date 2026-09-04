@@ -32,8 +32,8 @@
   # The list of segments shown on the left. Fill it with the most important segments.
   typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
     # =========================[ Line #1 ]=========================
-    context                 # user@hostname
-    # os_icon                 # os identifier
+    # context                 # user@hostname
+    os_icon                 # os identifier
     dir                     # current directory
     vcs                     # git status
     jj                      # current Jujutsu change ID
@@ -55,11 +55,11 @@
     asdf                    # asdf version manager (https://github.com/asdf-vm/asdf)
     virtualenv              # python virtual environment (https://docs.python.org/3/library/venv.html)
     anaconda                # conda environment (https://conda.io/)
-    pyenv                   # python environment (https://github.com/pyenv/pyenv)
-    goenv                   # go environment (https://github.com/syndbg/goenv)
-    nodenv                  # node.js version from nodenv (https://github.com/nodenv/nodenv)
-    nvm                     # node.js version from nvm (https://github.com/nvm-sh/nvm)
-    nodeenv                 # node.js environment (https://github.com/ekalinin/nodeenv)
+    #pyenv                   # python environment (https://github.com/pyenv/pyenv)
+    #goenv                   # go environment (https://github.com/syndbg/goenv)
+    #nodenv                  # node.js version from nodenv (https://github.com/nodenv/nodenv)
+    #nvm                     # node.js version from nvm (https://github.com/nvm-sh/nvm)
+    #nodeenv                 # node.js environment (https://github.com/ekalinin/nodeenv)
     # node_version          # node.js version
     # go_version            # go version (https://golang.org)
     # rust_version          # rustc version (https://www.rust-lang.org)
@@ -108,6 +108,7 @@
     taskwarrior             # taskwarrior task count (https://taskwarrior.org/)
     per_directory_history   # Oh My Zsh per-directory-history local/global indicator
     # cpu_arch              # CPU architecture
+    my_mise             # show mise stuff
     time                    # current time
     # =========================[ Line #2 ]=========================
     newline
@@ -195,7 +196,7 @@
   typeset -g POWERLEVEL9K_OS_ICON_FOREGROUND=232
   typeset -g POWERLEVEL9K_OS_ICON_BACKGROUND=7
   # Custom icon.
-  # typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION='⭐'
+  typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION=$'\ue711'
 
   ################################[ prompt_char: prompt symbol ]################################
   # Transparent background.
@@ -1471,7 +1472,7 @@
   #[ aws: aws profile (https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html) ]#
   # Show aws only when the command you are typing invokes one of these tools.
   # Tip: Remove the next line to always show aws.
-  typeset -g POWERLEVEL9K_AWS_SHOW_ON_COMMAND='aws|awless|cdk|terraform|pulumi|terragrunt'
+  # typeset -g POWERLEVEL9K_AWS_SHOW_ON_COMMAND='aws|awless|cdk|terraform|pulumi|terragrunt'
 
   # POWERLEVEL9K_AWS_CLASSES is an array with even number of elements. The first element
   # in each pair defines a pattern against which the current AWS profile gets matched.
@@ -1500,15 +1501,16 @@
       # '*prod*'  PROD    # These values are examples that are unlikely
       # '*test*'  TEST    # to match your needs. Customize them as needed.
       '*'       DEFAULT)
-  typeset -g POWERLEVEL9K_AWS_DEFAULT_FOREGROUND=7
-  typeset -g POWERLEVEL9K_AWS_DEFAULT_BACKGROUND=1
-  # typeset -g POWERLEVEL9K_AWS_DEFAULT_VISUAL_IDENTIFIER_EXPANSION='⭐'
+  typeset -g POWERLEVEL9K_AWS_DEFAULT_FOREGROUND=0
+  typeset -g POWERLEVEL9K_AWS_DEFAULT_BACKGROUND=172
+  typeset -g POWERLEVEL9K_AWS_DEFAULT_VISUAL_IDENTIFIER_EXPANSION=$'\uf0c2'
+  typeset -g POWERLEVEL9K_AWS_ICON_BEFORE_CONTENT=true
 
   # AWS segment format. The following parameters are available within the expansion.
   #
   # - P9K_AWS_PROFILE  The name of the current AWS profile.
   # - P9K_AWS_REGION   The region associated with the current AWS profile.
-  typeset -g POWERLEVEL9K_AWS_CONTENT_EXPANSION='${P9K_AWS_PROFILE//\%/%%}${P9K_AWS_REGION:+ ${P9K_AWS_REGION//\%/%%}}'
+  typeset -g POWERLEVEL9K_AWS_CONTENT_EXPANSION='${P9K_AWS_PROFILE//\%/%%}'
 
   #[ aws_eb_env: aws elastic beanstalk environment (https://aws.amazon.com/elasticbeanstalk/) ]#
   # AWS Elastic Beanstalk environment color.
@@ -1822,6 +1824,20 @@
     p10k segment -f 109 -i $'\uEF01' \
       -t "%B${unique}%b%F{245}${suffix}%f"
   }
+
+  #######################[ mise: current status ]########################
+  function prompt_my_mise() {
+    local out node_v py_v
+    out=$(mise ls --current 2>/dev/null) || return
+    node_v=$(awk '$1=="node"{print $2}' <<< "$out")
+    py_v=$(awk '$1=="python"{print $2}' <<< "$out")
+    [[ -n $node_v ]] && p10k segment -b 2 -f 0 -t "⬢ $node_v"
+    [[ -n $py_v  ]] && p10k segment -b 4 -f 0 -t " $py_v"
+  }
+
+  # Clear backgrounds so they match the rest of your modern theme layout
+  typeset -g POWERLEVEL9K_CUSTOM_MISE_DEFAULT_FOREGROUND=7
+  typeset -g POWERLEVEL9K_CUSTOM_MISE_DEFAULT_BACKGROUND=235
   
   # User-defined prompt segments can be customized the same way as built-in segments.
   typeset -g POWERLEVEL9K_EXAMPLE_FOREGROUND=3
