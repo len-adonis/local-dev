@@ -7,9 +7,30 @@ fi
 
 POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
 
+# From .shrc
+[ -f ~/.shrc ] && . ~/.shrc
+
+# Python (Only keep this pyenv block if you aren't using 'mise' for Python)
+# export PYENV_ROOT="$HOME/.pyenv"
+# if [[ -d $PYENV_ROOT/bin ]]; then
+#     export PATH="$PYENV_ROOT/bin:$PATH"
+#     zsh-defer eval "$(pyenv init - zsh)"
+# fi
+
+# Load on startup
+if [ -x "$HOME/.local/bin/mise" ]; then
+    eval "$($HOME/.local/bin/mise activate zsh)"
+else
+    eval "$(mise activate zsh)"
+fi
+
+# Rely on mise use --global node@22
+# export NVM_DIR="$HOME/.nvm"
+# zsh-defer source "$NVM_DIR/nvm.sh"
+# zsh-defer source "$NVM_DIR/bash_completion"
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
-
 
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -152,28 +173,6 @@ if [[ -n "$CURSOR_AGENT" ]]; then
 else
   [[ -r ~/.p10k.zsh ]] && source ~/.p10k.zsh
 fi
-
-# From .shrc
-[ -f ~/.shrc ] && . ~/.shrc
-
-# Python (Only keep this pyenv block if you aren't using 'mise' for Python)
-# export PYENV_ROOT="$HOME/.pyenv"
-# if [[ -d $PYENV_ROOT/bin ]]; then
-#     export PATH="$PYENV_ROOT/bin:$PATH"
-#     zsh-defer eval "$(pyenv init - zsh)"
-# fi
-
-# Deferred Mise Engine (Loads instantly behind the scenes)
-if [ -x "$HOME/.local/bin/mise" ]; then
-    zsh-defer eval "$($HOME/.local/bin/mise activate zsh)"
-else
-    zsh-defer eval "$(mise activate zsh)"
-fi
-
-# Rely on mise use --global node@22
-# export NVM_DIR="$HOME/.nvm"
-# zsh-defer source "$NVM_DIR/nvm.sh"
-# zsh-defer source "$NVM_DIR/bash_completion"
 
 
 # Do everything I need to do
