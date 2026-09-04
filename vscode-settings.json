@@ -1,0 +1,42 @@
+{
+  "workbench.editor.empty.hint": "hidden",
+  "workbench.settings.showAISearchToggle": false,
+  "chat.disableAIFeatures": true,
+  "workbench.colorTheme": "GitHub Dark Dimmed",
+  "workbench.iconTheme": "material-icon-theme",
+  "chatgpt.followUpQueueMode": "steer",
+  "window.newWindowProfile": "Default",
+  "githubPullRequests.queries": [
+    {
+      "label": "Waiting For My Review",
+      "query": "repo:${owner}/${repository} is:open review-requested:${user}",
+    },
+    {
+      "label": "Reviewed By Me",
+      "query": "repo:${owner}/${repository} is:open reviewed-by:${user}",
+    },
+    {
+      "label": "Local Pull Request Branches",
+      "query": "default",
+    },
+    {
+      "label": "Created By Me",
+      "query": "repo:${owner}/${repository} is:open author:${user}",
+    },
+  ],
+  "security.workspace.trust.untrustedFiles": "open",
+  "claudeCode.preferredLocation": "panel",
+  "workbench.startupEditor": "none",
+  "githubPullRequests.pullBranch": "never",
+  "diffEditor.ignoreTrimWhitespace": false,
+  "claudeCode.disableLoginPrompt": true,
+  "claudeCode.environmentVariables": [  
+    {"name":"CLAUDE_CODE_USE_BEDROCK","value":"1"},
+    {"name": "AWS_PROFILE", "value": "sandbox"}
+  ],
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "python.terminal.useEnvFile": true,
+  "terminal.integrated.fontFamily": "MesloLGS Nerd Font Mono"
+}
