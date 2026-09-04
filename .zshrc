@@ -131,16 +131,21 @@ bindkey "^[^[[C" forward-word
 # Quick Delete: Option + Delete
 bindkey '^[^?' backward-kill-word
 
-# Auto suggestions first, syntax highlight last
+# Core Shell Enhancements (Order matters: fzf-tab -> autosuggestions -> syntax)
 source ~/zsh-defer/zsh-defer.plugin.zsh
 zsh-defer source $(brew --prefix)/opt/fzf-tab/share/fzf-tab/fzf-tab.zsh
 zsh-defer source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# History Substring Search & Hotkeys
 zsh-defer source $(brew --prefix)/share/zsh-history-substring-search/zsh-history-substring-search.zsh
 zsh-defer bindkey '^[[A' history-substring-search-up
 zsh-defer bindkey '^[[B' history-substring-search-down
 zsh-defer bindkey '^[OA' history-substring-search-up
 zsh-defer bindkey '^[OB' history-substring-search-down
+
+# CRUCIAL: Syntax highlighting MUST be the absolute final deferred line
 zsh-defer source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 if [[ -n "$CURSOR_AGENT" ]]; then
@@ -152,14 +157,16 @@ fi
 # From .shrc
 [ -f ~/.shrc ] && . ~/.shrc
 
-# From adonis core readme
+# Python (Only keep this pyenv block if you aren't using 'mise' for Python)
 export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init - bash)"
+if [[ -d $PYENV_ROOT/bin ]]; then
+    export PATH="$PYENV_ROOT/bin:$PATH"
+    zsh-defer eval "$(pyenv init - zsh)"
+fi
 
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+zsh-defer source "$NVM_DIR/nvm.sh"
+zsh-defer source "$NVM_DIR/bash_completion"
 
 
 # Do everything I need to do
