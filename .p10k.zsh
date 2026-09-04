@@ -1827,12 +1827,13 @@
 
   #######################[ mise: current status ]########################
   function prompt_my_mise() {
-    local out node_v py_v
-    out=$(mise ls --current 2>/dev/null) || return
-    node_v=$(awk '$1=="node"{print $2}' <<< "$out")
-    py_v=$(awk '$1=="python"{print $2}' <<< "$out")
-    [[ -n $node_v ]] && p10k segment -b 2 -f 0 -t "⬢ $node_v"
-    [[ -n $py_v  ]] && p10k segment -b 4 -f 0 -t " $py_v"
+    local node_v py_v
+    node_v=$(mise current node 2>/dev/null)
+    py_v=$(mise current python 2>/dev/null)
+    node_v=${(j:.:)${(s:.:)node_v}[1,2]}
+    py_v=${(j:.:)${(s:.:)py_v}[1,2]}
+    [[ -n $node_v ]] && p10k segment -b 2 -f 0 -t $''" $node_v"
+    [[ -n $py_v  ]] && p10k segment -b 4 -f 0 -t $''" $py_v"
   }
 
   # Clear backgrounds so they match the rest of your modern theme layout
