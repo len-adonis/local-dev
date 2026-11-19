@@ -1,0 +1,17 @@
+# Safety net: sync.sh copies only its list, but never commit these if they appear.
+config/local/
+config/data/
+config/shared.json
+config/view.json
+config/window.json
+config/seen.json
+config/layouts/.state/
+config/**/*.mp3
+config/**/*.png
+config/**/*.webp
+config/**/len-kit.js
+!config/len-kit/len-kit.js
+config/**/gpui-kit.d.ts
+config/herdr.d.ts
+config/AGENTS.md
+config/mods/next-meeting/NextMeeting.app/Contents/MacOS/
