@@ -13,6 +13,7 @@ Read this before you add or change a mod. The app's own manual is `~/.config/her
 | `rest` | Dialog (rest-watch.js in my-status, or Len commands) | The white break reminder. Tune LIMIT_MS, AWAY_MS, SNOOZE_MS in `my-status/rest-watch.js`. |
 | `len-commands` | Popup, `cmd-shift-k` | The personal palette. To add a command, add an entry to `COMMANDS`. |
 | `space-vscode` | Top bar | Opens the space's repo in VS Code. |
+| `my-toast` | Every notification (the layout's `"toast"`) | Herdr's shipped `toast`, plus: an agent alert (`agent.focus`) while Herdr is not the front app also goes to macOS through terminal-notifier; clicking it runs the same `agent.focus`. |
 | `my-chrome` | Sidebar footer | A copy of `workspace-chrome` without "Add machine". |
 | `next-meeting` | (helper app) | `NextMeeting.app` reads Apple Calendar for `my-status`. |
 

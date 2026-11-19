@@ -38,6 +38,8 @@ FILES=(
   mods/my-status/db-watch.js
   mods/my-status/rest-watch.js
   mods/my-status/stack-watch.js
+  mods/my-toast/desktop.js
+  mods/my-toast/make-my-toast.sh
   mods/next-meeting/src/main.swift
   mods/next-meeting/NextMeeting.app/Contents/Info.plist
   mods/notes/main.js
@@ -59,6 +61,8 @@ done
 echo "copied ${#FILES[@]} files to $TO"
 
 if [ "${1:-}" = "--install" ]; then
+  # my-toast = Herdr's shipped toast + desktop.js; build it from this machine's Herdr.
+  "$APP/mods/my-toast/make-my-toast.sh"
   # Each mod that imports len-kit gets its own copy (mods can't import outside their folder).
   "$APP/len-kit/sync.sh"
 fi

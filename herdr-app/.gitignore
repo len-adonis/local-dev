@@ -15,3 +15,7 @@ config/**/gpui-kit.d.ts
 config/herdr.d.ts
 config/AGENTS.md
 config/mods/next-meeting/NextMeeting.app/Contents/MacOS/
+# my-toast: only desktop.js and make-my-toast.sh are mine; the rest is Herdr code.
+config/mods/my-toast/main.js
+config/mods/my-toast/mod.json
+config/mods/my-toast/jsconfig.json
