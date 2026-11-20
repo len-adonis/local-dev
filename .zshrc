@@ -155,8 +155,10 @@ zsh-defer source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 # Load on startup
 if [ -x "$HOME/.local/bin/mise" ]; then
     zsh-defer eval "$($HOME/.local/bin/mise activate zsh)"
+    zsh-defer eval "$($HOME/.local/bin/mise completion zsh)"
 else
     zsh-defer eval "$(mise activate zsh)"
+    zsh-defer eval "$(mise completion zsh)"
 fi
 
 # Rely on mise use --global node@22
@@ -185,6 +187,15 @@ fi
 # Do everything I need to do
 alias trustmebro='assume production'
 alias goodmorning='open https://mail.google.com/mail/u/0/ && open https://stage.app.adonis.io/ && open https://keepersecurity.com/vault/# && assume production'
+refreshbox() {
+  if ! aws sts get-caller-identity --profile sandbox --output text > /dev/null; then
+    echo "⏳ AWS SSO session expired. Opening login..."
+    aws sso login --profile sandbox
+    echo "✅ Logged in."
+    return 1
+  fi
+  echo "✅ Already logged in."
+}
 
 # Use Amazon Bedrock
 export CLAUDE_CODE_USE_BEDROCK=1
@@ -193,3 +204,6 @@ export CLAUDE_CODE_USE_BEDROCK=1
 
 # CRUCIAL: Syntax highlighting MUST be the absolute final deferred line
 zsh-defer source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# opencode
+export PATH=$HOME/.opencode/bin:$PATH
+export PATH=/opt/homebrew/opt/openjdk/bin:$PATH
