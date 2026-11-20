@@ -1828,8 +1828,11 @@
   #######################[ mise: current status ]########################
   function prompt_my_mise() {
     local node_v py_v
-    node_v=$(mise current node 2>/dev/null)
-    py_v=$(mise current python 2>/dev/null)
+    # Read versions from the PATH entries that `mise activate` adds, so no mise
+    # process starts on each prompt (2 x `mise current` cost ~330ms per prompt).
+    # :A resolves alias dirs such as node/22 -> node/22.23.2. Empty until mise loads.
+    node_v=${${${${(M)path:#*/mise/installs/node/*}[1]:A}#*/mise/installs/node/}%%/*}
+    py_v=${${${${(M)path:#*/mise/installs/python/*}[1]:A}#*/mise/installs/python/}%%/*}
     node_v=${(j:.:)${(s:.:)node_v}[1,2]}
     py_v=${(j:.:)${(s:.:)py_v}[1,2]}
     [[ -n $node_v ]] && p10k segment -b 2 -f 0 -t $''" $node_v"
