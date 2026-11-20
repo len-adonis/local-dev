@@ -1,0 +1,16 @@
+{
+  "zoom": 1.2999999523162842,
+  "sounds": {
+    "enabled": true,
+    "done": "sounds/samsung_done.mp3",
+    "blocked": "sounds/samsung_washer_phrase.mp3"
+  },
+  "font": "MesloLGS Nerd Font Mono",
+  "font_size": 11.25,
+  "font_ligatures": false,
+  "terminal_line_height": 1,
+  "terminal_cell_width": 1,
+  "terminal_scroll_speed": 1,
+  "telemetry": false,
+  "minimum_contrast": 1
+}
