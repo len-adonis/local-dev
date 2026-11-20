@@ -10,8 +10,7 @@ fi
 
 POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
 
-# From .shrc
-[ -f ~/.shrc ] && . ~/.shrc
+# .shrc is sourced by ~/.zshenv, so it is not sourced again here.
 
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
@@ -100,6 +99,10 @@ plugins=(
     python
 )
 
+# Cached completions (must be on fpath before oh-my-zsh runs compinit).
+# Regenerate after a mise upgrade: mise completion zsh > ~/.zfunc/_mise
+fpath=(~/.zfunc $fpath)
+
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -141,9 +144,11 @@ bindkey "^[^[[C" forward-word
 bindkey '^[^?' backward-kill-word
 
 # Core Shell Enhancements (Order matters: fzf-tab -> autosuggestions -> syntax)
+# By default zsh-defer runs all chpwd and precmd hooks (p10k, mise) after EACH task.
+# `-dm` turns that off. Only the final task (syntax highlighting) runs the hooks, once.
 source ~/zsh-defer/zsh-defer.plugin.zsh
-zsh-defer source /opt/homebrew/opt/fzf-tab/share/fzf-tab/fzf-tab.zsh
-zsh-defer source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+zsh-defer -dm source /opt/homebrew/opt/fzf-tab/share/fzf-tab/fzf-tab.zsh
+zsh-defer -dm source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # Python (Only keep this pyenv block if you aren't using 'mise' for Python)
 # export PYENV_ROOT="$HOME/.pyenv"
@@ -153,12 +158,11 @@ zsh-defer source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 # fi
 
 # Load on startup
+# Use -c '...' so that $(mise activate) runs in the deferred task, not at queue time.
 if [ -x "$HOME/.local/bin/mise" ]; then
-    zsh-defer eval "$($HOME/.local/bin/mise activate zsh)"
-    zsh-defer eval "$($HOME/.local/bin/mise completion zsh)"
+    zsh-defer -dm -c 'eval "$($HOME/.local/bin/mise activate zsh)"'
 else
-    zsh-defer eval "$(mise activate zsh)"
-    zsh-defer eval "$(mise completion zsh)"
+    zsh-defer -dm -c 'eval "$(mise activate zsh)"'
 fi
 
 # Rely on mise use --global node@22
@@ -171,11 +175,8 @@ fi
 
 
 # History Substring Search & Hotkeys
-zsh-defer source /opt/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
-zsh-defer bindkey '^[[A' history-substring-search-up
-zsh-defer bindkey '^[[B' history-substring-search-down
-zsh-defer bindkey '^[OA' history-substring-search-up
-zsh-defer bindkey '^[OB' history-substring-search-down
+zsh-defer -dm source /opt/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+zsh-defer -dm -c "bindkey '^[[A' history-substring-search-up; bindkey '^[[B' history-substring-search-down; bindkey '^[OA' history-substring-search-up; bindkey '^[OB' history-substring-search-down"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 if [[ -n "$CURSOR_AGENT" ]]; then
