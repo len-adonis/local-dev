@@ -25,7 +25,7 @@
 import { View, div, svg, image } from "gpui-kit";
 import { v_flex, h_flex, InputState, Input, Scrollbar, ScrollHandle, TextView } from "gpui-base";
 import { theme, exec, notify, home, props, openOverlay, closeOverlay, shared, setShared, spaces, run, checking } from "herdr";
-import { keychain, ago as age } from "./len-kit.js";
+import { keychain, ago as age, sh } from "./len-kit.js";
 
 const API = "https://api.factory.ai/api/v0";
 const APP = (id) => `factory-desktop://sessions/${id}`;
@@ -55,7 +55,7 @@ async function api(path, body) {
 // This Mac's computer id, so its sessions (local) are left out.
 async function localComputer() {
   if (thisMac) return thisMac;
-  const r = await exec("sh", ["-c", "jq -r .computerId ~/.factory/computer.json"]);
+  const r = await sh("jq -r .computerId ~/.factory/computer.json");
   thisMac = r.code === 0 ? r.stdout.trim() : "";
   return thisMac;
 }
@@ -69,7 +69,7 @@ async function computerOnline(id) {
 // A local session's folder: line 1 of ~/.factory/sessions/<slug>/<id>.jsonl is
 // {"type":"session_start","cwd":…}. Take it from there: the folder slug is lossy.
 async function sessionFolder(id) {
-  const r = await exec("sh", ["-c", 'f=$(find ~/.factory/sessions -maxdepth 2 -name "$0.jsonl" | head -1); [ -n "$f" ] && head -n 1 "$f" | jq -r ".cwd // empty"', id]);
+  const r = await sh('f=$(find ~/.factory/sessions -maxdepth 2 -name "$0.jsonl" | head -1); [ -n "$f" ] && head -n 1 "$f" | jq -r ".cwd // empty"', id);
   const dir = r.code === 0 ? r.stdout.trim() : "";
   if (!dir) return null;
   const ok = await exec("test", ["-d", dir]);

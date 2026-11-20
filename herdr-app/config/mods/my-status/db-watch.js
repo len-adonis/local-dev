@@ -14,11 +14,10 @@
 //   with `hiddenDuringAccess` that is down is "hidden", not "down".
 // The popup asks for a fresh check with setShared("db.poke", Date.now()).
 import { exec, shared, setShared } from "herdr";
-import { loadLocal } from "./len-kit.js";
+import { loadLocal, sh, expandHome } from "./len-kit.js";
 
 // Teleport's request states.
 const STATES = { 1: "pending", 2: "approved", 3: "denied", 4: "promoted" };
-const expand = (p) => p.replace(/^~(?=\/|$)/, "$HOME");
 
 let lastPoke = null, busy = false;
 let requests = null, requestsAt = 0;
@@ -35,7 +34,7 @@ async function json(cmd, args, timeout = 20_000) {
 async function lookup(row, cwd, force) {
   const pg = row.pg, cached = lookups[row.id];
   if (cached && !force && Date.now() - cached.at < (pg.lookupEvery ?? 3600) * 1000) return { addr: cached.addr };
-  const r = await exec("sh", ["-c", `cd ${expand(cwd)} && ${pg.lookup}`], { timeout: 30_000 });
+  const r = await sh('cd "$0" && eval "$1"', expandHome(cwd), pg.lookup, { timeout: 30_000 });
   let addr = null;
   if (r.code === 0) { try { const v = JSON.parse(r.stdout); if (v.host) addr = { host: v.host, port: v.port }; } catch { /* handled below */ } }
   if (addr) { lookups[row.id] = { addr, at: Date.now() }; return { addr }; }

@@ -13,8 +13,14 @@ export function find(node, id) {
 }
 
 // Runs a shell script. Pass values as args, not in the script: they arrive as $0, $1, …
-// so no quoting is needed.
-export const sh = (script, ...args) => exec("sh", ["-c", script, ...args]);
+// so no quoting is needed. An object as the last arg is exec's options: sh(s, a, { timeout }).
+export const sh = (script, ...args) => {
+  const opts = args.length && typeof args.at(-1) === "object" ? args.pop() : undefined;
+  return exec("sh", ["-c", script, ...args], opts);
+};
+
+// "~" or "~/x" with your home folder put in. Use it for paths that go to a command as args.
+export const expandHome = (p) => p.replace(/^~(?=\/|$)/, home());
 
 // A text file's contents, or "" if it is missing. Don't use readTextFile from "herdr":
 // for a missing file it never settles (no result, no error).

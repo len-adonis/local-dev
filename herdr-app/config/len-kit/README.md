@@ -6,7 +6,7 @@ Read this before you add or change a mod. The app's own manual is `~/.config/her
 
 | Mod | Where it shows | What it does |
 |---|---|---|
-| `my-status` | Status bar | Machine, branch, stack position (`stack-watch.js`), agents, next meeting, `DB ● ●` (`db-watch.js`). It also runs the 70/30 auto-split for new tabs (`auto-split.js`, `split7030.py`). |
+| `my-status` | Status bar | Branch, stack position (`stack-watch.js`), next meeting and room, keyboard time (`rest-watch.js`), `DB ● ●` (`db-watch.js`). Machine only for a remote space; agents only when they need you. It also runs the 70/30 auto-split for new tabs (`auto-split.js`, `split7030.py`). |
 | `notes` | Top bar button (`props.button`) and side panel | Daily notes in `~/src/notes/daily/YYYY-MM-DD.md`. Key commands: `notes.prev`, `notes.next`, `notes.today`. |
 | `droid-cloud` | Sidebar, under Agents | Factory Droid sessions, cloud and local. The key is in the Keychain (`factory-api-key`). Sessions can hold PHI: memory only. |
 | `db` | Popup (status bar, Len commands) | A general access dashboard: Teleport sign-in, one access request, Postgres checks, buttons. Every name, host, command and link is in `local/db.json` (not in git); `mods/db/db.example.json` shows the shape. |
@@ -26,7 +26,7 @@ A mod can import only files inside its own folder: `../` imports and symlinks bo
 1. Edit only `len-kit/len-kit.js`.
 2. Run `len-kit/sync.sh`. It copies the file into each mod that imports `./len-kit.js`, and then checks those mods.
 
-The kit has: `find`, `sh`, `readText`, `writeText`, `keychain`, `clock`, `ago`, `dur`, `keyStretch` (keyboard time for the break modal and status bar), `panelShown`, `togglePanel`, `openInSpaceChrome`, `nextMeeting`, `googleCalendarUrl`, `loadLocal`.
+The kit has: `find`, `sh` (values as `$0`, `$1`, …; options such as `{ timeout }` last), `expandHome`, `readText`, `writeText`, `keychain`, `clock`, `ago`, `dur`, `keyStretch` (keyboard time for the break modal and status bar), `panelShown`, `togglePanel`, `openInSpaceChrome`, `nextMeeting`, `googleCalendarUrl`, `loadLocal`.
 
 ## Local settings: `local/`
 
@@ -46,5 +46,7 @@ Run `len-kit/check-all.sh`. It checks every mod in the layout and the popups, an
 - `TextView` and `Textarea` come from `gpui-base`, not `gpui-kit`.
 - A plain `ScrollHandle` has no `scroll_to_bottom`. Use `scroll_to_item`.
 - Do not call `setShared` in the `init` of a dialog copy.
+- A popup that closes itself (Len commands) kills work that is still waiting: a `.then()` or `await` after `closeOverlay` never runs. Start the exec at once, in one call.
+- Do not put paths or config text into a shell script with `${…}`. Pass them to `sh` as args.
 - `hc ls --json` does not include terminal labels. `hc get` does.
 - One unbalanced `)` stops the whole mod from loading, and its button disappears. Run the check.

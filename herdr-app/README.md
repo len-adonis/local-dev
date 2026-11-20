@@ -6,7 +6,7 @@ My setup for the Herdr desktop app: personal mods, a layout, keys and settings. 
 
 | Mod | What it does |
 |---|---|
-| `my-status` | The status bar: machine, branch, stack position, agents, next meeting, keyboard time, and database dots. It also splits each new tab 70/30. |
+| `my-status` | The status bar: branch, stack position, next meeting and its room, keyboard time, and database dots. It shows the machine only for a remote space, and agents only when they need you. It also splits each new tab 70/30. |
 | `db` | A popup for database access: Teleport sign-in, one access request, Postgres checks, and buttons that run commands. All names, hosts and commands come from `local/db.json`. |
 | `len-commands` | A personal command palette on `cmd-shift-k`. |
 | `notes` | Daily notes in a side panel. |

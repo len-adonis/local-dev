@@ -14,15 +14,13 @@
 //   and `dropAccess` (turn the access request off first).
 import { View, div } from "gpui-kit";
 import { v_flex, h_flex, InputState, Input } from "gpui-base";
-import { theme, exec, notify, props, closeOverlay, shared, setShared, run, spaces, home, checking } from "herdr";
-import { clock, loadLocal } from "./len-kit.js";
+import { theme, exec, notify, props, closeOverlay, shared, setShared, run, spaces, checking } from "herdr";
+import { clock, loadLocal, expandHome } from "./len-kit.js";
 
 const left = (ms) => {
   const m = Math.max(0, Math.round((ms - Date.now()) / 60_000));
   return m < 60 ? `${m}m left` : `${Math.floor(m / 60)}h ${m % 60}m left`;
 };
-const expand = (p) => p.replace(/^~(?=\/|$)/, home());
-const quote = (s) => `'${String(s).replace(/'/g, `'\\''`)}'`;
 
 export default class Databases extends View {
   init(_props, cx) {
@@ -68,7 +66,8 @@ export default class Databases extends View {
     });
   }
 
-  sh(cmd, timeout) { return ["sh", ["-c", `cd ${quote(expand(this.cfg.cwd ?? "~"))} && ${cmd}`], timeout ? timeout * 1000 : undefined]; }
+  // The command is shell text from local/db.json; the folder goes in as $0, so it needs no quoting.
+  sh(cmd, timeout) { return ["sh", ["-c", 'cd "$0" && eval "$1"', expandHome(this.cfg.cwd ?? "~"), cmd], timeout ? timeout * 1000 : undefined]; }
   drop(id) { return ["tsh", ["request", "drop", id]]; }
   signIn() { const a = this.cfg.access; return ["tsh", ["login", `--proxy=${a.proxy}`, ...(a.auth ? [`--auth=${a.auth}`] : [])], 300_000]; }
 
@@ -83,7 +82,7 @@ export default class Databases extends View {
 
   shell() {
     const s = this.cfg.access.shell, space = spaces().find((x) => x.active);
-    run("tab.new", { name: s.tab ?? "shell", space: space?.id, folder: expand(this.cfg.cwd ?? "~"), argv: ["sh", "-c", s.cmd] });
+    run("tab.new", { name: s.tab ?? "shell", space: space?.id, folder: expandHome(this.cfg.cwd ?? "~"), argv: ["sh", "-c", s.cmd] });
     closeOverlay(props().overlay);
   }
 

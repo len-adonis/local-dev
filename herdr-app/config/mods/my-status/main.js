@@ -1,7 +1,7 @@
 import { View, div, svg } from "gpui-kit";
 import { h_flex } from "gpui-base";
-import { spaces, agents, theme, run, window, keys, exec, shared, openOverlay, checking } from "herdr";
-import { clock, dur, keyStretch, openInSpaceChrome, googleCalendarUrl } from "./len-kit.js";
+import { spaces, agents, theme, run, window, keys, shared, openOverlay, checking, appHome } from "herdr";
+import { clock, dur, keyStretch, openInSpaceChrome, googleCalendarUrl, sh, readText } from "./len-kit.js";
 import { startAutoSplit } from "./auto-split.js";
 import { startDbWatch } from "./db-watch.js";
 import { startStackWatch } from "./stack-watch.js";
@@ -10,8 +10,9 @@ import { startRestWatch } from "./rest-watch.js";
 // Next meeting: mods/next-meeting/NextMeeting.app (src/main.swift) reads Apple Calendar,
 // which includes synced Google calendars, and writes data/next-meeting.json.
 // It is its own app because macOS gives calendar access per app, and Herdr doesn't ask for it.
-const APP = "~/.config/herdr-app/mods/next-meeting/NextMeeting.app";
-const FILE = "~/.config/herdr-app/data/next-meeting.json";
+// Not len-kit's nextMeeting(): that hides the error, and the bar shows "Calendar access is off".
+const APP = `${appHome()}/mods/next-meeting/NextMeeting.app`;
+const FILE = `${appHome()}/data/next-meeting.json`;
 const span = (min) => (min < 60 ? `${min}m` : `${Math.floor(min / 60)}h ${min % 60}m`);
 
 export default class WorkspaceStatus extends View {
@@ -32,9 +33,8 @@ export default class WorkspaceStatus extends View {
 
   refreshMeeting(cx) {
     cx.spawn(async (cx) => {
-      await exec("sh", ["-c", `open -g -j -W ${APP}`], { timeout: 20_000 });
-      const r = await exec("sh", ["-c", `cat ${FILE}`]);
-      try { this.meeting = JSON.parse(r.stdout); } catch { this.meeting = null; }
+      await sh('open -g -j -W "$0"', APP, { timeout: 20_000 });
+      try { this.meeting = JSON.parse(await readText(FILE)); } catch { this.meeting = null; }
       cx.notify();
     });
   }

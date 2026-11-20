@@ -7,6 +7,7 @@
 // - Needs restack: the recorded parent commit is not the parent branch's commit now.
 // Four quick git calls, when the focused folder changes and every 30 s.
 import { exec, focused } from "herdr";
+import { sh } from "./len-kit.js";
 
 async function git(cwd, args) {
   const r = await exec("git", ["-C", cwd, ...args], { timeout: 10_000 });
@@ -22,7 +23,7 @@ async function stackFor(cwd) {
   if (!names.includes(branch)) return null; // not a tracked branch (or the trunk)
   // All records in one call: `git cat-file --batch` prints "<sha> blob <size>\n<json>\n",
   // in the same order as for-each-ref lists them.
-  const r = await exec("sh", ["-c", 'cd "$0" && git for-each-ref --format="%(objectname)" refs/branch-metadata/ | git cat-file --batch', cwd], { timeout: 10_000 });
+  const r = await sh('cd "$0" && git for-each-ref --format="%(objectname)" refs/branch-metadata/ | git cat-file --batch', cwd, { timeout: 10_000 });
   if (r.code !== 0) return null;
   const meta = {};
   const out = r.stdout;

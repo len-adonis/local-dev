@@ -13,7 +13,7 @@
 import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex, Textarea, TextareaState, TextView, InputState, Input } from "gpui-base";
 import { theme, exec, run, props, shared, setShared, home, nextCommand, settings } from "herdr";
-import { readText as read, writeText as write, panelShown, togglePanel } from "./len-kit.js";
+import { readText as read, writeText as write, panelShown, togglePanel, sh } from "./len-kit.js";
 
 const DIR = `${home()}/src/notes/daily`;
 const SAVE_MS = 500;
@@ -157,7 +157,7 @@ export default class Notes extends View {
   }
 
   async listDays() {
-    const r = await exec("sh", ["-c", 'ls "$0" 2>/dev/null', DIR]);
+    const r = await sh('ls "$0" 2>/dev/null', DIR);
     this.days = r.stdout.split("\n").map((f) => f.match(/^(\d{4}-\d\d-\d\d)\.md$/)?.[1]).filter(Boolean).sort();
   }
 

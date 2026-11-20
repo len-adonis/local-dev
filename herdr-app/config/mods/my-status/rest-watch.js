@@ -8,7 +8,8 @@
 //   next meeting), and not again within SNOOZE_MS ("Not now", or Esc).
 // State, shared("rest"): { since (start of this stretch), snoozeUntil, lastCheck }.
 // The modal reads and changes it too. The timings are shared as shared("rest.config"). Len commands "Take a break (preview)" opens it at once.
-import { exec, shared, setShared, openOverlay } from "herdr";
+import { shared, setShared, openOverlay } from "herdr";
+import { sh } from "./len-kit.js";
 
 export const LIMIT_MS = 90 * 60_000;
 export const AWAY_MS = 10 * 60_000;
@@ -20,7 +21,7 @@ const TICK_MS = 30_000;
 export const openRest = () => openOverlay({ mod: "rest", kind: "window", frame: "none", key: "rest", width: 1, height: 1, at: { x: 0, y: 0 } });
 
 async function idleMs() {
-  const r = await exec("sh", ["-c", "ioreg -c IOHIDSystem | awk '/HIDIdleTime/ {print $NF; exit}'"]);
+  const r = await sh("ioreg -c IOHIDSystem | awk '/HIDIdleTime/ {print $NF; exit}'");
   const ns = Number(r.stdout.trim());
   return r.code === 0 && Number.isFinite(ns) ? ns / 1e6 : 0;
 }
