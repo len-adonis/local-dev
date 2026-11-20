@@ -108,15 +108,18 @@ end run`;
 // own binary: with the default profile it passes the URL to your running Chrome and quits
 // (a new tab in its last window, not the space's named window).
 const REAL_CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
-const otherChrome = () => sh('pgrep -f "^$0 .*--user-data-dir=" >/dev/null', REAL_CHROME).then((r) => r.code === 0);
+
+// All steps run in ONE shell call that starts at once. A popup (Len commands) closes
+// before its command runs, and a .then() that runs after the close never fires, so
+// a two-step pgrep-then-open did nothing from the palette. Fallback: plain `open -a`.
+const OPEN = `chrome=$1 space=$2 url=$3
+if pgrep -f "^$chrome .*--user-data-dir=" >/dev/null; then exec "$chrome" "$url"; fi
+[ -n "$space" ] && osascript -e "$0" -- "$space" "$url" >/dev/null && exit 0
+exec open -a "Google Chrome" "$url"`;
 
 export function openInSpaceChrome(url) {
-  const space = spaces().find((s) => s.active)?.name;
-  otherChrome().then((other) => {
-    if (other) return exec(REAL_CHROME, [url], { timeout: 15_000 });
-    const go = space ? exec("osascript", ["-e", CHROME, "--", space, url]) : Promise.resolve({ code: 1 });
-    return go.then((r) => { if (r.code !== 0) exec("open", ["-a", "Google Chrome", url]); });
-  });
+  const space = spaces().find((s) => s.active)?.name ?? "";
+  return exec("sh", ["-c", OPEN, CHROME, REAL_CHROME, space, url], { timeout: 15_000 });
 }
 
 // The next meeting (null if none), as mods/next-meeting/NextMeeting.app writes it (Apple Calendar, which
