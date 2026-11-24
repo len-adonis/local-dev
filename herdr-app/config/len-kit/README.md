@@ -14,6 +14,7 @@ Read this before you add or change a mod. The app's own manual is `~/.config/her
 | `len-commands` | Popup, `cmd-shift-k` | The personal palette. To add a command, add an entry to `COMMANDS`. |
 | `space-vscode` | Top bar | Opens the space's repo in VS Code. |
 | `my-toast` | Every notification (the layout's `"toast"`) | Herdr's shipped `toast`, plus: an agent alert (`agent.focus`) while Herdr is not the front app also goes to macOS through terminal-notifier; clicking it runs the same `agent.focus`. |
+| `my-changes` | Changes panel | A copy of the shipped `changes` with a scope row: Uncommitted, Not pushed (`@{u}..HEAD`), Branch (since the Graphite parent or the trunk, with uncommitted and new files). Not pushed and Branch list their commits (● local, ○ pushed); click one to see only it. On a Graphite stack, Branch also lists the stack (top first); click a branch to see its PR without checking it out. The layout block keeps the id `changes`. |
 | `my-chrome` | Sidebar footer | A copy of `workspace-chrome` without "Add machine". |
 | `next-meeting` | (helper app) | `NextMeeting.app` reads Apple Calendar for `my-status`. |
 

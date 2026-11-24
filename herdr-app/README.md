@@ -12,6 +12,7 @@ My setup for the Herdr desktop app: personal mods, a layout, keys and settings. 
 | `notes` | Daily notes in a side panel. |
 | `rest` | A break reminder after 90 minutes of keyboard time. |
 | `droid-cloud` | Factory Droid sessions in the sidebar. The API key stays in the macOS Keychain. |
+| `my-changes` | The Changes panel with more views: Uncommitted, Not pushed, and Branch (since the Graphite parent or `main`). It lists the branch's commits and the Graphite stack; click one to see only its diff. View only: it has no commit box. A changed copy of Herdr's `changes` mod (Apache 2.0, see its `LICENSE-herdr`). |
 | `my-toast` | Herdr's own toast, plus desktop notifications for agent alerts when Herdr is not in front. Clicking one goes to the agent. Only `desktop.js` and `make-my-toast.sh` are here; the script builds the mod from your Herdr install. Turn it on with `"toast": "my-toast"` at the top of `layouts/herdr-chrome.json`. Needs `terminal-notifier`. |
 | `next-meeting` | A small Swift app that reads Apple Calendar for the status bar. |
 | `space-vscode` | A top bar button that opens the space's repo in VS Code. |

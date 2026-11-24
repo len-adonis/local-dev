@@ -3,8 +3,8 @@
 // editor can open them:
 //   ~/src/notes/daily/YYYY-MM-DD.md   "# Wed 2026-11-18", "## Today" (the one most
 //                                     important thing, one line), "## Notes" (free text)
-// ‹ › step one calendar day (forward up to tomorrow); the header says Today / Yesterday /
-// k days ago / Tomorrow, with the full date as a caption and a Today button. Today's line also shows on
+// ‹ › step one calendar day (forward up to the next workday: Monday from Fri/Sat/Sun);
+// the header says Today / Yesterday / k days ago / Tomorrow / the weekday ahead, with the full date as a caption and a Today button. Today's line also shows on
 // the top bar button ("Notes: …"), where you look when you pick what to do next. A new day
 // with no priorities offers to carry over the last day's.
 // The notepad shows rendered markdown; click it to edit, click away to render again.
@@ -27,10 +27,17 @@ const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 const LONG_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 // "Wednesday, Nov 18, 2026"
 const longDate = (s) => { const d = new Date(`${s}T12:00:00`); return `${LONG_DAYS[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`; };
-// "Today", "Yesterday", "3 days ago"
+// "Today", "Yesterday", "3 days ago", "Tomorrow", "Monday" (a later day this week or next)
 const relative = (s) => {
   const k = Math.round((new Date(`${dateOf(new Date())}T12:00:00`) - new Date(`${s}T12:00:00`)) / 86_400_000);
-  return k === 0 ? "Today" : k === 1 ? "Yesterday" : k > 1 ? `${k} days ago` : k === -1 ? "Tomorrow" : `In ${-k} days`;
+  return k === 0 ? "Today" : k === 1 ? "Yesterday" : k > 1 ? `${k} days ago` : k === -1 ? "Tomorrow"
+    : k >= -6 ? LONG_DAYS[new Date(`${s}T12:00:00`).getDay()] : `In ${-k} days`;
+};
+// The first workday (Mon-Fri) after `date`: Monday from Friday, Saturday or Sunday.
+const nextWorkday = (date) => {
+  const d = new Date(`${date}T12:00:00`);
+  do d.setDate(d.getDate() + 1); while (d.getDay() === 0 || d.getDay() === 6);
+  return dateOf(d);
 };
 
 // A day's file -> { today, notes }. Text before the sections counts as notes.
@@ -184,7 +191,7 @@ export default class Notes extends View {
   }
 
   // ‹ › step one calendar day. Back: any day, with or without a note. Forward: up to
-  // tomorrow (to plan it), so › is disabled on tomorrow.
+  // the next workday (to plan it; over a weekend that is Monday), where › is disabled.
   shifted(date, k) {
     const d = new Date(`${date}T12:00:00`);
     d.setDate(d.getDate() + k);
@@ -192,7 +199,7 @@ export default class Notes extends View {
   }
 
   canStepForward() {
-    return this.date < this.shifted(dateOf(new Date()), 1);
+    return this.date < nextWorkday(dateOf(new Date()));
   }
 
   step(dir, cx) {

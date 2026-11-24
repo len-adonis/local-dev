@@ -38,6 +38,10 @@ FILES=(
   mods/my-status/db-watch.js
   mods/my-status/rest-watch.js
   mods/my-status/stack-watch.js
+  mods/my-changes/main.js
+  mods/my-changes/mod.json
+  mods/my-changes/changes.svg
+  mods/my-changes/LICENSE-herdr
   mods/my-toast/desktop.js
   mods/my-toast/make-my-toast.sh
   mods/next-meeting/src/main.swift
