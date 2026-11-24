@@ -1,0 +1,49 @@
+{
+  "cwd": "~/src/your-repo",
+  "access": {
+    "proxy": "example.teleport.sh",
+    "auth": "okta",
+    "label": "Elevated access",
+    "app": "your-elevated-app",
+    "reasonHint": "what you need it for",
+    "shell": { "label": "Shell", "tab": "elevated", "cmd": "./scripts/elevated-shell.sh" }
+  },
+  "rows": [
+    {
+      "id": "main",
+      "title": "Main database (read-only)",
+      "bar": true,
+      "every": 30,
+      "pg": { "host": "localhost", "port": 5432, "user": "readonly", "db": "app" },
+      "hiddenDuringAccess": true,
+      "text": { "up": "Tunnel up", "down": "Tunnel down", "hidden": "Hidden while elevated access is on" },
+      "buttons": {
+        "up": [{ "label": "Stop", "cmd": "./scripts/tunnel.sh --stop", "busy": "Stopping tunnel" }],
+        "down": [{ "label": "Start", "cmd": "./scripts/tunnel.sh --detach", "busy": "Starting tunnel", "done": "Tunnel up", "needsSignIn": true }],
+        "hidden": [{ "label": "Turn off access & start", "dropAccess": true, "cmd": "./scripts/tunnel.sh --detach", "busy": "Starting tunnel", "done": "Access off · tunnel up" }]
+      }
+    },
+    {
+      "id": "staging",
+      "title": "Staging database",
+      "bar": true,
+      "every": 60,
+      "pg": {
+        "lookup": "aws --profile staging secretsmanager get-secret-value --secret-id <secret> --query SecretString --output text | jq -c '{host, port}'",
+        "lookupEvery": 3600,
+        "authError": "expired|sso|token|credential"
+      },
+      "text": { "up": "Reachable", "down": "Can't reach it: VPN off?", "auth": "AWS session expired: sign in", "lookup": "Couldn't look up the host" },
+      "buttons": {
+        "auth": [{ "label": "AWS sign-in", "cmd": "aws sso login --profile staging", "timeout": 300, "busy": "Signing in to AWS", "done": "Signed in to AWS" }],
+        "*": [{ "label": "Open", "cmd": "./scripts/open-staging.sh", "onlyWhen": "up" }]
+      }
+    },
+    {
+      "id": "links",
+      "title": "Warehouse",
+      "detail": "Rows without a check show only their buttons",
+      "buttons": { "*": [{ "label": "Open", "url": "https://example.com" }] }
+    }
+  ]
+}
